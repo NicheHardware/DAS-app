@@ -6,6 +6,7 @@
 
 	export let node: TypeNode = randomNode()
 
+	export let showChart: boolean = false
 	let series = [
 		{
 			label: "Time",
@@ -42,8 +43,8 @@
 	}
 </script>
 
-<div class="flex flex-row gap-1 m-1">
-	<div class="flex-0 my-1 border-2 rounded-xl border-gray-400">
+<div class="flex gap-1">
+	<div class="flex-0 border-2 rounded-xl border-gray-400">
 		<div class="w-40 mt-2 flex flex-row gap-1 justify-center">
 			{#each node.leds as led}
 				{#if led}
@@ -73,7 +74,9 @@
 			</div>
 		</div>
 	</div>
-	<div class="flex-1 my-1 border-2 rounded-xl border-gray-400">
-		<UPlot {series} {data} />
-	</div>
+	{#if showChart}
+		<div class="flex-1 border-2 rounded-xl border-gray-400">
+			<UPlot {series} {data} />
+		</div>
+	{/if}
 </div>
