@@ -4,11 +4,11 @@
 	import "uplot/dist/uPlot.min.css"
 
 	export let series = [{}, {}]
-	export let data = [[], []] // [x[], y[]]
+	export let data: number[][] = [[], []] // [x[], y[]]
 
-	let container // parent container <div>
-	let chart
-	let resizeObserver
+	let container: HTMLDivElement // parent container <div>
+	let chart: uPlot
+	let resizeObserver: ResizeObserver
 
 	function updateSize() {
 		if (!chart) return
