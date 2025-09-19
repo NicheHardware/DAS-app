@@ -4,11 +4,11 @@
 	import "uplot/dist/uPlot.min.css"
 
 	export let series = [{}, {}]
-	export let data = [[], []] // [x[], y[]]
+	export let data: number[][] = [[], []] // [x[], y[]]
 
-	let container // parent container <div>
-	let chart
-	let resizeObserver
+	let container: HTMLDivElement // parent container <div>
+	let chart: uPlot
+	let resizeObserver: ResizeObserver
 
 	function updateSize() {
 		if (!chart) return
@@ -46,7 +46,7 @@
 </script>
 
 <!-- parent must have some CSS size for this div -->
-<div bind:this={container} class="uplot-wrapper m-2 p-2"></div>
+<div bind:this={container} class="uplot-wrapper p-2"></div>
 
 <style>
 	.uplot-wrapper {
