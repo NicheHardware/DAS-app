@@ -13,9 +13,8 @@
 ## Screenshots
 
 <div align="center">
-	<img width="42%" src="./screenshot-grid.png"/>
-	<img width="42%" src="./screenshot-list.png"/>
+	<img width="42%" alt="Screenshot-grid" src="https://github.com/user-attachments/assets/b97991ca-ebf0-4cf8-b29f-ae6aebaf5974" />
+	<img width="42%" alt="Screenshot-list" src="https://github.com/user-attachments/assets/6e8c98c1-155a-4519-a0f1-c981fbc5abfb" />
 </div>
-
 
 On this console, you can view data from all distributed nodes in real time and export data from any node.
