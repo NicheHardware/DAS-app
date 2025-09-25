@@ -9,3 +9,15 @@ export function Greet(arg1) {
 export function LogPrintln(arg1) {
   return window['go']['main']['App']['LogPrintln'](arg1);
 }
+
+export function NewDataNotify() {
+  return window['go']['main']['App']['NewDataNotify']();
+}
+
+export function StartSim(arg1) {
+  return window['go']['main']['App']['StartSim'](arg1);
+}
+
+export function StopSim() {
+  return window['go']['main']['App']['StopSim']();
+}

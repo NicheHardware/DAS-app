@@ -1,20 +1,25 @@
 <script lang="ts">
 	import Node from "./Node.svelte"
 	import type { TypeNode } from "./Node"
-	import { LogPrintln } from "../wailsjs/go/main/App.js"
-	import { randomNode, randomData } from "./Node"
+	import { LogPrintln, StartSim, StopSim } from "../wailsjs/go/main/App.js"
+	import { EventsOn } from '../wailsjs/runtime';
+	import { onMount } from "svelte"
 
 	let showChart = false
-	const debugDataCount = 200
-	const debugNodeCount = 16
 	const headerStyle = "top-0 left-0 right-0 h-14"
 	const footerStyle = "bottom-0 left-0 right-0 h-10"
 
-	let nodes: TypeNode[] = Array.from({ length: debugNodeCount }, () =>
-		randomNode()
-	)
-	nodes.forEach((node) => {
-		;[node.axisX, node.axisY] = randomData(node, debugDataCount)
+	let nodes: TypeNode[] = []
+
+	onMount(() => {
+		StopSim()
+		EventsOn("new-data", (data) => {
+			// console.log(data)
+			nodes = []
+			Object.values(data).forEach(node => {
+				nodes.push(node as TypeNode)
+			})
+		});
 	})
 </script>
 
@@ -24,6 +29,23 @@
 	<div class="text-3xl font-bold">DAS Console</div>
 
 	<div class="ml-auto flex items-center gap-2">
+		
+		<button
+			class="btn btn-outline btn-info btn-sm"
+			on:click={() => (StartSim(16))}
+			title="Start simulation"
+		>
+		<span class="">Start Sim</span>
+		</button>
+
+		<button
+			class="btn btn-outline btn-info btn-sm"
+			on:click={StopSim}
+			title="Stop simulation"
+		>
+		<span class="">Stop Sim</span>
+		</button>
+
 		<!-- Grid view button (active when showChart is false) -->
 		<button
 			class="btn btn-outline btn-info btn-sm"

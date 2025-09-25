@@ -14,22 +14,23 @@
 				UTC == null ? "" : formatLocalTime(UTC),
 		},
 		{
-			label: node.nodeType,
-			stroke: node.nodeColor,
+			label: node.Type,
+			stroke: node.Color,
 			value: (_: null, rawValue: number) =>
 				rawValue == null
 					? ""
-					: rawValue.toFixed(node.digit) + node.unit,
+					: rawValue.toFixed(node.Digit) + node.Unit,
 		},
 	]
 
-	let macAddress: string = node.mac
-		.map((b) => b.toString(16).padStart(2, "0")) // 2-digit hex
+	let macAddress: string = node.Mac.map((b) =>
+		b.toString(16).padStart(2, "0")
+	) // 2-Digit hex
 		.join(":")
 		.toUpperCase()
 
 	let data: number[][]
-	$: data = [node.axisX, node.axisY]
+	$: data = [node.AxisX, node.AxisY]
 
 	function formatLocalTime(timestamp: number | Date): string {
 		const date = new Date(timestamp)
@@ -46,31 +47,31 @@
 <div class="flex gap-1">
 	<div class="flex-0 border-2 rounded-xl border-gray-400">
 		<div class="w-40 mt-2 flex flex-row gap-1 justify-center">
-			{#each node.leds as led}
+			{#each node.Leds as led}
 				{#if led}
-					<div class="w-3 h-3 m-1 rounded-full bg-neutral-50" />
+					<div class="w-3 h-3 m-1 rounded-full bg-neutral-50"></div>
 				{:else}
 					<div
 						class="w-3 h-3 m-1 rounded-full border-2 border-neutral-600"
-					/>
+					></div>
 				{/if}
 			{/each}
 		</div>
 		<div class="w-40 m-1 flex justify-center">
-			<span class={`text-2xl font-bold`} style="color: {node.nodeColor}"
-				>{node.nodeType}</span
+			<span class={`text-xl font-bold`} style="color: {node.Color}"
+				>{node.Type}</span
 			>
 		</div>
 		<div class="w-40 m-1 flex justify-center">
-			<span class="text-4xl font-bold"
-				>{node.currentValue.toFixed(node.digit)} {node.unit}</span
+			<span class="text-3xl font-bold text-center"
+				>{node.CurrentValue.toFixed(node.Digit)} {node.Unit}</span
 			>
 		</div>
 		<div class="w-40 m-1 flex justify-center">
 			<div class="flex flex-col text-xs text-neutral-500">
 				<span class="">{macAddress}</span>
 				<span class="">RSSI:{node.RSSI.toFixed(0)}dB</span>
-				<span class="">BATT:{node.battery.toFixed(0)}%</span>
+				<span class="">BATT:{node.Battery.toFixed(0)}%</span>
 			</div>
 		</div>
 	</div>
