@@ -1,16 +1,19 @@
 export interface TypeNode {
-	nodeType: string
-	unit: string
-	digit: number
-	nodeColor: string
-	battery: number
-	RSSI: number
-	mac: number[]
-	leds: number[]
+	Name: string
 
-	currentValue: number
-	axisX: number[]
-	axisY: number[]
+	Type: string
+	Unit: string
+	Digit: number
+	Color: string
+
+	Battery: number
+	RSSI: number
+	Mac: number[]
+	Leds: number[]
+
+	CurrentValue: number
+	AxisX: number[]
+	AxisY: number[]
 }
 
 export function randomData(node: TypeNode, count: number) {
@@ -22,7 +25,7 @@ export function randomData(node: TypeNode, count: number) {
 
 	let randP = 0
 	let randNow = 0
-	switch (node.nodeType) {
+	switch (node.Type) {
 		case "Temperature":
 			randNow =
 				15 +
@@ -65,42 +68,42 @@ export function randomNode() {
 	let leds = mac.slice(1).map((b) => b & 1)
 	if (Math.random() > 0.68) {
 		return {
-			nodeType: "Voltage",
-			unit: "V",
-			digit: 2,
-			nodeColor: "#37f",
-			currentValue:
+			Type: "Voltage",
+			Unit: "V",
+			Digit: 2,
+			Color: "#37f",
+			CurrentValue:
 				0.9 +
 				Math.random() * 0.1 +
 				Math.random() * 0.1 +
 				Math.random() * 0.1 +
 				Math.random() * 0.1,
 
-			axisX: [],
-			axisY: [],
-			battery: 30 + Math.random() * 70,
+			AxisX: [],
+			AxisY: [],
+			Battery: 30 + Math.random() * 70,
 			RSSI: -80 + Math.random() * 50,
-			mac: mac,
-			leds: leds,
+			Mac: mac,
+			Leds: leds,
 		}
 	} else {
 		return {
-			nodeType: "Temperature",
-			unit: "°C",
-			digit: 1,
-			nodeColor: "#f73",
-			currentValue:
+			Type: "Temperature",
+			Unit: "°C",
+			Digit: 1,
+			Color: "#f73",
+			CurrentValue:
 				15 +
 				Math.random() * 10 +
 				Math.random() * 10 +
 				Math.random() * 10,
 
-			axisX: [],
-			axisY: [],
-			battery: 30 + Math.random() * 70,
+			AxisX: [],
+			AxisY: [],
+			Battery: 30 + Math.random() * 70,
 			RSSI: -80 + Math.random() * 50,
-			mac: mac,
-			leds: leds,
+			Mac: mac,
+			Leds: leds,
 		}
 	}
 }
