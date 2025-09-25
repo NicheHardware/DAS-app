@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -29,4 +31,17 @@ func (a *App) Greet(name string) string {
 func (a *App) LogPrintln(log string) (len int) {
 	len, _ = fmt.Println(log)
 	return len
+}
+
+func (a *App) StartSim(count int) {
+	StopSim()
+	StartSim(count)
+}
+
+func (a *App) StopSim() {
+	StopSim()
+}
+
+func (a *App) NewDataNotify() {
+	runtime.EventsEmit(a.ctx, "new-data", nodes)
 }
