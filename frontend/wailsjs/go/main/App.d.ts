@@ -4,3 +4,9 @@
 export function Greet(arg1:string):Promise<string>;
 
 export function LogPrintln(arg1:string):Promise<number>;
+
+export function NewDataNotify():Promise<void>;
+
+export function StartSim(arg1:number):Promise<void>;
+
+export function StopSim():Promise<void>;
