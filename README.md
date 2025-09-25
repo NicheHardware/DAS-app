@@ -1,6 +1,9 @@
 <div>
 	<div align="center">
-		<img src="https://capsule-render.vercel.app/api?type=transparent&fontColor=dbdbdb&text=DAS%20Console&height=80&fontSize=48"/>
+		<img alt="logo" width=200 src="https://raw.githubusercontent.com/NicheHardware/DAS-app/refs/heads/dev/logo.png"/>
+	</div>
+	<div align="center">
+		<img alt="title" src="https://capsule-render.vercel.app/api?type=transparent&fontColor=dbdbdb&text=DAS%20Console&height=80&fontSize=48"/>
 	</div>
 </div>
 
