@@ -2,9 +2,8 @@
 	import { onMount } from "svelte"
 	import UPlot from "./UPlot.svelte"
 	import type { TypeNode } from "./Node"
-	import { randomNode } from "./Node"
 
-	export let node: TypeNode = randomNode()
+	export let node: TypeNode
 
 	export let showChart: boolean = false
 	let series = [
