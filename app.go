@@ -21,6 +21,7 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	StartCM01Manager()
 }
 
 // Greet returns a greeting for the given name
@@ -34,12 +35,14 @@ func (a *App) LogPrintln(log string) (len int) {
 }
 
 func (a *App) StartSim(count int) {
+	PauseExternalAcquisition()
 	StopSim()
 	StartSim(count)
 }
 
 func (a *App) StopSim() {
 	StopSim()
+	ResumeExternalAcquisition()
 }
 
 func (a *App) NewDataNotify() {

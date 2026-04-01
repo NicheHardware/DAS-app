@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"time"
 )
 
@@ -117,6 +118,7 @@ type Node struct {
 	lastIdx      uint32
 	startIdx     uint32
 	startTime    time.Time
+	LastDeviceTs uint64
 }
 
 type Nodes map[string]*Node
@@ -167,6 +169,16 @@ func (n *Node) NormalizeTimestamp(tick uint64, hostNow int64) int64 {
 }
 
 func (n *Node) AppendFrame(ts int64, values map[string]float32) {
+	if len(n.AxisX) > 0 && n.AxisX[len(n.AxisX)-1] == ts {
+		for _, metric := range n.Metrics {
+			value := values[metric.Key]
+			metric.CurrentValue = value
+			if len(metric.AxisY) > 0 {
+				metric.AxisY[len(metric.AxisY)-1] = value
+			}
+		}
+		return
+	}
 	n.AxisX = append(n.AxisX, ts)
 	for _, metric := range n.Metrics {
 		value := values[metric.Key]
@@ -186,6 +198,43 @@ func (n *Node) AppendFrame(ts int64, values map[string]float32) {
 func (n *Node) UpdateFrom(data ScanData) {
 	n.lastIdx = data.Index
 	_ = data
+}
+
+func (n *Node) MetricMap() map[string]*MetricSeries {
+	metrics := make(map[string]*MetricSeries, len(n.Metrics))
+	for _, metric := range n.Metrics {
+		metrics[metric.Key] = metric
+	}
+	return metrics
+}
+
+func (n *Node) ApplyMetricRecords(records map[uint64]map[string]float32, hostNow int64) bool {
+	if len(records) == 0 {
+		return false
+	}
+	keys := make([]uint64, 0, len(records))
+	for ts := range records {
+		if ts <= n.LastDeviceTs {
+			continue
+		}
+		keys = append(keys, ts)
+	}
+	if len(keys) == 0 {
+		return false
+	}
+	sort.Slice(keys, func(i, j int) bool { return keys[i] < keys[j] })
+	for _, tick := range keys {
+		values := records[tick]
+		if def, ok := NodeTypeMap[n.TypeCode]; ok {
+			for key, compute := range def.Compute {
+				values[key] = compute(values)
+			}
+		}
+		ts := n.NormalizeTimestamp(tick, hostNow)
+		n.AppendFrame(ts, values)
+		n.LastDeviceTs = tick
+	}
+	return true
 }
 
 func OnScanData(d ScanData) {
