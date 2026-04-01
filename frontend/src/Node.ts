@@ -1,17 +1,22 @@
-export interface TypeNode {
+export interface TypeMetric {
+	Key: string
 	Name: string
-
-	Type: string
 	Unit: string
 	Digit: number
 	Color: string
+	Kind: "source" | "derived"
+	CurrentValue: number
+	AxisY: number[]
+}
 
+export interface TypeNode {
+	Name: string
+	TypeCode: number
+	TypeName: string
 	Battery: number
 	RSSI: number
 	Mac: number[]
 	Leds: number[]
-
-	CurrentValue: number
 	AxisX: number[]
-	AxisY: number[]
+	Metrics: TypeMetric[]
 }
