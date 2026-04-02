@@ -1,26 +1,35 @@
 <script lang="ts">
-	import { onMount } from "svelte"
 	import UPlot from "./UPlot.svelte"
 	import type { TypeNode } from "./Node"
 
 	export let node: TypeNode
 
 	export let showChart: boolean = false
-	let series = [
-		{
-			label: "Time",
-			value: (_: null, UTC: number) =>
-				UTC == null ? "" : formatLocalTime(UTC),
-		},
-		{
-			label: node.Type,
-			stroke: node.Color,
-			value: (_: null, rawValue: number) =>
-				rawValue == null
-					? ""
-					: rawValue.toFixed(node.Digit) + node.Unit,
-		},
-	]
+	let selectedMetricIndex = 0
+	$: metrics = node.Metrics ?? []
+	$: isSingleMetric = metrics.length <= 1
+	$: if (selectedMetricIndex >= metrics.length) selectedMetricIndex = 0
+	$: selectedMetric = metrics[selectedMetricIndex] ?? metrics[0]
+	$: chartKey = selectedMetric
+		? `${selectedMetric.Key}-${selectedMetric.Color}`
+		: "empty"
+	$: series = selectedMetric
+		? [
+				{
+					label: "Time",
+					value: (_: null, UTC: number) =>
+						UTC == null ? "" : formatLocalTime(UTC),
+				},
+				{
+					label: selectedMetric.Name,
+					stroke: selectedMetric.Color,
+					value: (_: null, rawValue: number) =>
+						rawValue == null
+							? ""
+							: rawValue.toFixed(selectedMetric.Digit) + selectedMetric.Unit,
+				},
+		  ]
+		: [{}, {}]
 
 	let macAddress: string = node.Mac.map((b) =>
 		b.toString(16).padStart(2, "0")
@@ -29,7 +38,7 @@
 		.toUpperCase()
 
 	let data: number[][]
-	$: data = [node.AxisX, node.AxisY]
+	$: data = selectedMetric ? [node.AxisX, selectedMetric.AxisY] : [[], []]
 
 	function formatLocalTime(timestamp: number | Date): string {
 		const date = new Date(timestamp)
@@ -40,6 +49,14 @@
 		const seconds = date.getSeconds().toString().padStart(2, "0")
 
 		return `${hours}:${minutes}:${seconds}`
+	}
+
+	function selectMetric(index: number) {
+		selectedMetricIndex = index
+	}
+
+	function getMetricLabel(name: string) {
+		return name.slice(0, 3)
 	}
 </script>
 
@@ -57,14 +74,37 @@
 			{/each}
 		</div>
 		<div class="w-40 m-1 flex justify-center">
-			<span class={`text-xl font-bold`} style="color: {node.Color}"
-				>{node.Type}</span
+			<span class={`text-xl font-bold text-center`}>{node.Name}</span
 			>
 		</div>
-		<div class="w-40 m-1 flex justify-center">
-			<span class="text-3xl font-bold text-center"
-				>{node.CurrentValue.toFixed(node.Digit)} {node.Unit}</span
-			>
+		<div class="w-40 m-1 flex justify-center text-sm text-neutral-400">
+			<span>{node.TypeName}</span>
+		</div>
+		<div class="w-40 m-1 px-2 flex flex-col gap-1">
+			{#each metrics as metric, index}
+				{@const isSelected = selectedMetricIndex === index}
+				<button
+					class="flex items-center justify-between rounded-md border px-2 py-1 text-left transition-colors"
+					class:bg-neutral-800={isSelected}
+					class:border-neutral-700={!isSelected}
+					on:click={() => selectMetric(index)}
+					style:border-color={isSelected ? metric.Color : undefined}
+					style:box-shadow={isSelected
+						? `0 0 0 1px ${metric.Color} inset`
+						: undefined}
+				>
+					{#if isSingleMetric}
+						<span class="w-full text-center font-bold"
+							>{metric.CurrentValue.toFixed(metric.Digit)} {metric.Unit}</span
+						>
+					{:else}
+						<span style="color: {metric.Color}">{getMetricLabel(metric.Name)}</span>
+						<span class="font-bold"
+							>{metric.CurrentValue.toFixed(metric.Digit)} {metric.Unit}</span
+						>
+					{/if}
+				</button>
+			{/each}
 		</div>
 		<div class="w-40 m-1 flex justify-center">
 			<div class="flex flex-col text-xs text-neutral-500">
@@ -76,7 +116,9 @@
 	</div>
 	{#if showChart}
 		<div class="flex-1 border-2 rounded-xl border-gray-400">
-			<UPlot {series} {data} />
+			{#key chartKey}
+				<UPlot {series} {data} />
+			{/key}
 		</div>
 	{/if}
 </div>

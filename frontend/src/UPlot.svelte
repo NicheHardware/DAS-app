@@ -10,14 +10,8 @@
 	let chart: uPlot
 	let resizeObserver: ResizeObserver
 
-	function updateSize() {
-		if (!chart) return
-		const rect = container.getBoundingClientRect()
-		chart.setSize({ width: rect.width, height: rect.height })
-	}
-
-	onMount(() => {
-		// initial size from container
+	function createChart() {
+		if (!container) return
 		const rect = container.getBoundingClientRect()
 		chart = new uPlot(
 			{
@@ -30,6 +24,16 @@
 			data.map((row) => new Float64Array(row)),
 			container
 		)
+	}
+
+	function updateSize() {
+		if (!chart) return
+		const rect = container.getBoundingClientRect()
+		chart.setSize({ width: rect.width, height: rect.height })
+	}
+
+	onMount(() => {
+		createChart()
 
 		// watch for parent resize
 		resizeObserver = new ResizeObserver(updateSize)
@@ -42,7 +46,7 @@
 	})
 
 	// update data when parent passes new arrays
-	$: chart && chart.setData(data)
+	$: chart && chart.setData(data.map((row) => new Float64Array(row)))
 </script>
 
 <!-- parent must have some CSS size for this div -->
